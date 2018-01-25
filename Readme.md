@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Юлия Волкова](https://up.htmlacademy.ru/javascript/12/user/130894).
-* Наставник: `Неизвестно`.
+* Наставник: [Юлька Долгун](https://htmlacademy.ru/profile/id42333).
 
 ---
 
