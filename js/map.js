@@ -7,8 +7,9 @@ var ANNOUNCEMENTS_TIME = ['12:00', '13:00', '14:00'];
 var ANNOUNCEMENTS_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var ANNOUNCEMENTS_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var announcements = [];
-var duplicateAnnouncementTemplate = document.querySelector('#duplicate-announcement-template').content;
-var dublicateListAnnouncementElement = document.querySelector('.map__pins');
+var duplicateAnnouncementTemplate = document.querySelector('template').content;
+var dublicateListAnnouncementLabel = document.querySelector('.map__pins');
+var MAP = document.querySelector('.map');
 
 // Получаю рандомный элемент массива
 var generateRandomElement = function (arr) {
@@ -75,7 +76,8 @@ var generateRandomAnnouncement = function () {
 };
 generateRandomAnnouncement();
 
-// Копирование из шаблона во фрагмент и занесение в DOM
+
+// Копирование из шаблона во фрагмент текста
 var renderAnnouncement = function (announcement) {
   var announcementElement = duplicateAnnouncementTemplate.cloneNode(true);
   announcementElement.querySelector('h3').textContent = announcement.offer.title;
@@ -97,29 +99,38 @@ var renderAnnouncement = function (announcement) {
   for (var j = 0; j < announcement.offer.photos; j++) {
     announcementElement.querySelector('.popup__pictures li img').setAttribute('src', announcement.offer.photos[j]);
   }
-  announcementElement.querySelector('.popup__avatar').setAttribute('src', announcement.author.avatar);
-  announcementElement.querySelector('.map__pin img').src = announcement.author.avatar;
-  announcementElement.querySelector('.map__pin img').style.left = announcement.location.x;
-  announcementElement.querySelector('.map__pin img').style.top = announcement.location.y;
+  announcementElement.querySelector('.popup__avatar').src = announcement.author.avatar;
   return announcementElement;
 };
 
+// Копирование из шаблона во фрагмент меток
 var renderAnnouncementLabel = function (announcement) {
-  var announcementElement = duplicateAnnouncementTemplate.cloneNode(true);
-  announcementElement.querySelector('.map__pin img').src = announcement.author.avatar;
-  announcementElement.querySelector('.map__pin img').style.left = announcement.location.x;
-  announcementElement.querySelector('.map__pin img').style.top = announcement.location.y;
-  return announcementElement;
+  var announcementLabel = duplicateAnnouncementTemplate.cloneNode(true);
+  announcementLabel.querySelector('.map__pin img').src = announcement.author.avatar;
+  announcementLabel.querySelector('.map__pin img').style.left = announcement.location.x;
+  announcementLabel.querySelector('.map__pin img').style.top = announcement.location.y;
+  return announcementLabel;
 };
 
-var addAnnouncementsInDOM = function () {
+// Вставка текста на карту
+var addAnnouncementsTextInDOM = function () {
   var fragment = document.createDocumentFragment();
   generateRandomAnnouncement();
   // for (var j = 0; j < announcements.length; j++) {
   fragment.appendChild(renderAnnouncement(announcements[0]));
   // }
-  dublicateListAnnouncementElement.appendChild(fragment);
-  document.querySelector('.map').insertBefore(dublicateListAnnouncementElement, document.querySelector('.map__filters-container'))
+  MAP.insertBefore(fragment, document.querySelector('.map__filters-container'))
 };
 
-addAnnouncementsInDOM();
+// Вставка меток на карту
+var addAnnouncementsLabelInDOM = function () {
+  var fragmentLabel = document.createDocumentFragment();
+  generateRandomAnnouncement();
+  for (var j = 0; j < announcements.length; j++) {
+    fragmentLabel.appendChild(renderAnnouncementLabel(announcements[j]));
+  }
+  dublicateListAnnouncementLabel.appendChild(fragmentLabel);
+};
+
+addAnnouncementsTextInDOM();
+addAnnouncementsLabelInDOM();
