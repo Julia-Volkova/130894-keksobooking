@@ -116,7 +116,7 @@ var addAnnouncementsTextInDOM = function () {
   var fragment = document.createDocumentFragment();
   generateRandomAnnouncement();
   fragment.appendChild(renderAnnouncement(announcements[0]));
-  MAP.insertBefore(fragment, document.querySelector('.map__filters-container'))
+  MAP.insertBefore(fragment, document.querySelector('.map__filters-container'));
 };
 
 
