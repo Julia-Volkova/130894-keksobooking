@@ -10,32 +10,33 @@ var announcements = [];
 var duplicateAnnouncementTemplate = document.querySelector('template').content;
 var dublicateListAnnouncementLabel = document.querySelector('.map__pins');
 var MAP = document.querySelector('.map');
+var locationX;
+var locationY;
 
-// Получаю рандомный элемент массива
+
 var generateRandomElement = function (arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 };
 
-// Получаю рандомный элемент массива c нулем вначале
+
 var getRandomNumberWithZero = function (min, max) {
   var random = Math.floor(Math.random() * (max - min + 1)) + min;
   return '0' + random;
 };
 
-// Генерация случайного числа от ... до ...
+
 var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 
-// Случайный порядок элементов в массиве
 var setRandomElementInArray = function (array) {
   return array.concat().sort(function () {
     return 0.5 - Math.random();
   });
 };
 
-// Генерация случайного размера массива на основе конкретного массива
+
 var generateRandomLengthArray = function (features) {
   var newArray = [];
   for (var c = 0; c <= Math.floor(Math.random() * features.length); c++) {
@@ -44,11 +45,11 @@ var generateRandomLengthArray = function (features) {
   return newArray;
 };
 
-// Генерация одного объявления и добавление в массив
+
 var generateRandomAnnouncement = function () {
   for (var i = 0; i < ANNOUNCEMENTS_COUNT; i++) {
-    var locationX = getRandomNumber(300, 900) - document.querySelector('.map__pin img').getAttribute('height') / 2;
-    var locationY = getRandomNumber(150, 500) - document.querySelector('.map__pin img').getAttribute('height');
+    locationX = getRandomNumber(300, 900) - document.querySelector('.map__pin img').getAttribute('height') / 2;
+    locationY = getRandomNumber(150, 500) - document.querySelector('.map__pin img').getAttribute('height');
     announcements[i] = {
       'author': {
         'avatar': 'img/avatars/user' + getRandomNumberWithZero(1, 8) + '.png'
@@ -77,9 +78,8 @@ var generateRandomAnnouncement = function () {
 generateRandomAnnouncement();
 
 
-// Копирование из шаблона во фрагмент текста
 var renderAnnouncement = function (announcement) {
-  var announcementElement = duplicateAnnouncementTemplate.cloneNode(true);
+  var announcementElement = duplicateAnnouncementTemplate.querySelector('.map__card').cloneNode(true);
   announcementElement.querySelector('h3').textContent = announcement.offer.title;
   announcementElement.querySelector('small').textContent = announcement.offer.address;
   announcementElement.querySelector('.popup__price').textContent = announcement.offer.price + ' ₽/Ночь';
@@ -97,32 +97,29 @@ var renderAnnouncement = function (announcement) {
   }
   announcementElement.querySelector('.popup__description').textContent = announcement.offer.description;
   for (var j = 0; j < announcement.offer.photos; j++) {
-    announcementElement.querySelector('.popup__pictures li img').setAttribute('src', announcement.offer.photos[j]);
+    announcementElement.querySelector('.popup__pictures li img').src = announcement.offer.photos[j];
   }
   announcementElement.querySelector('.popup__avatar').src = announcement.author.avatar;
   return announcementElement;
 };
 
-// Копирование из шаблона во фрагмент меток
+
 var renderAnnouncementLabel = function (announcement) {
-  var announcementLabel = duplicateAnnouncementTemplate.cloneNode(true);
-  announcementLabel.querySelector('.map__pin img').src = announcement.author.avatar;
-  announcementLabel.querySelector('.map__pin img').style.left = announcement.location.x;
-  announcementLabel.querySelector('.map__pin img').style.top = announcement.location.y;
+  var announcementLabel = duplicateAnnouncementTemplate.querySelector('.map__pin').cloneNode(true);
+  announcementLabel.querySelector('img').src = announcement.author.avatar;
+  announcementLabel.setAttribute('style', 'left: ' + announcement.location.y + 'px; top: ' + announcement.location.x + 'px;');
   return announcementLabel;
 };
 
-// Вставка текста на карту
+
 var addAnnouncementsTextInDOM = function () {
   var fragment = document.createDocumentFragment();
   generateRandomAnnouncement();
-  // for (var j = 0; j < announcements.length; j++) {
   fragment.appendChild(renderAnnouncement(announcements[0]));
-  // }
   MAP.insertBefore(fragment, document.querySelector('.map__filters-container'))
 };
 
-// Вставка меток на карту
+
 var addAnnouncementsLabelInDOM = function () {
   var fragmentLabel = document.createDocumentFragment();
   generateRandomAnnouncement();
