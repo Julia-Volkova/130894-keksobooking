@@ -77,8 +77,6 @@ var generateRandomAnnouncement = function () {
   }
   return announcements;
 };
-//generateRandomAnnouncement();
-
 
 var renderAnnouncement = function (announcement) {
   var announcementElement = duplicateAnnouncementTemplate.querySelector('.map__card').cloneNode(true);
@@ -95,14 +93,20 @@ var renderAnnouncement = function (announcement) {
   announcementElement.querySelector('.popup__rooms').textContent = announcement.offer.rooms + ' комнаты для ' + announcement.offer.guests + ' гостей';
   announcementElement.querySelector('.popup__time').textContent = 'Заезд после ' + announcement.offer.checkin + ' , выезд до ' + announcement.offer.checkout;
 
+  var features = announcementElement.querySelector('.popup__features');
+  var featureItems = announcementElement.querySelectorAll('.popup__features li');
+  for (var a = 0; a < featureItems.length; a++) {
+    features.removeChild(featureItems[a]);
+  }
   console.log(announcement.offer.features);
   // Фичи для каждого объявления (удаляет выбранные фичи, а должен добавлять)
   for (var i = 0; i < announcement.offer.features.length; i++) {
     //announcementElement.querySelector('.feature--' + announcement.offer.features[i]).textContent = announcement.offer.features[i];
-    console.log(announcement.offer.features[i]);
-    var li = announcementElement.querySelector('.popup__features li');
-    announcementElement.querySelector('.popup__features').removeChild(li);
+    var li = document.createElement('li');
+    li.className = 'feature feature--' + announcement.offer.features[i];
+    announcementElement.querySelector('.popup__features').appendChild(li);
   }
+  console.log(announcementElement.querySelector('.popup__features'));
 
   announcementElement.querySelector('.popup__description').textContent = announcement.offer.description;
 
