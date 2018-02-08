@@ -1,8 +1,8 @@
 'use strict';
 
 var ANNOUNCEMENTS_COUNT = 8;
-var ANNOUNCEMENTS_TITLE = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
-var ANNOUNCEMENTS_TYPE = ['flat', 'house', 'bungalo'];
+var ANNOUNCEMENT_TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
+var ANNOUNCEMENT_TYPES = ['flat', 'house', 'bungalo'];
 var ANNOUNCEMENTS_TIME = ['12:00', '13:00', '14:00'];
 var ANNOUNCEMENTS_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var ANNOUNCEMENTS_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
@@ -12,6 +12,8 @@ var dublicateListAnnouncementLabel = document.querySelector('.map__pins');
 var MAP = document.querySelector('.map');
 var locationX;
 var locationY;
+var LABEL_WIDTH = 50;
+var LABEL_HEIGHT = 70;
 
 
 var generateRandomElement = function (arr) {
@@ -48,17 +50,17 @@ var generateRandomLengthArray = function (features) {
 
 var generateRandomAnnouncement = function () {
   for (var i = 0; i < ANNOUNCEMENTS_COUNT; i++) {
-    locationX = getRandomNumber(300, 900) - document.querySelector('.map__pin img').getAttribute('height') / 2;
-    locationY = getRandomNumber(150, 500) - document.querySelector('.map__pin img').getAttribute('height');
+    locationX = getRandomNumber(300, 900) - LABEL_WIDTH / 2;
+    locationY = getRandomNumber(150, 500) - LABEL_HEIGHT;
     announcements[i] = {
       'author': {
         'avatar': 'img/avatars/user' + getRandomNumberWithZero(1, 8) + '.png'
       },
       'offer': {
-        'title': generateRandomElement(ANNOUNCEMENTS_TITLE).toString(),
+        'title': generateRandomElement(ANNOUNCEMENT_TITLES),
         'address': locationX + ', ' + locationY,
         'price': getRandomNumber(1000, 1000000),
-        'type': generateRandomElement(ANNOUNCEMENTS_TYPE),
+        'type': generateRandomElement(ANNOUNCEMENT_TYPES),
         'rooms': getRandomNumber(1, 5),
         'guests': getRandomNumber(1, 15),
         'checkin': generateRandomElement(ANNOUNCEMENTS_TIME),
@@ -75,7 +77,7 @@ var generateRandomAnnouncement = function () {
   }
   return announcements;
 };
-generateRandomAnnouncement();
+//generateRandomAnnouncement();
 
 
 var renderAnnouncement = function (announcement) {
@@ -92,13 +94,29 @@ var renderAnnouncement = function (announcement) {
   }
   announcementElement.querySelector('.popup__rooms').textContent = announcement.offer.rooms + ' комнаты для ' + announcement.offer.guests + ' гостей';
   announcementElement.querySelector('.popup__time').textContent = 'Заезд после ' + announcement.offer.checkin + ' , выезд до ' + announcement.offer.checkout;
-  for (var i = 0; i < announcement.offer.features; i++) {
-    announcementElement.querySelector('.feature--' + announcement.offer.features[i]).textContent = announcement.offer.features[i];
+
+  console.log(announcement.offer.features);
+  // Фичи для каждого объявления (удаляет выбранные фичи, а должен добавлять)
+  for (var i = 0; i < announcement.offer.features.length; i++) {
+    //announcementElement.querySelector('.feature--' + announcement.offer.features[i]).textContent = announcement.offer.features[i];
+    console.log(announcement.offer.features[i]);
+    var li = announcementElement.querySelector('.popup__features li');
+    announcementElement.querySelector('.popup__features').removeChild(li);
   }
+
   announcementElement.querySelector('.popup__description').textContent = announcement.offer.description;
-  for (var j = 0; j < announcement.offer.photos; j++) {
-    announcementElement.querySelector('.popup__pictures li img').src = announcement.offer.photos[j];
+
+  // Добавление картинок в рандомном порядке (добавляется лишняя картинка)
+  for (var j = 0; j < announcement.offer.photos.length; j++) {
+    var newLi = document.createElement('li');
+    var newImg = document.createElement('img');
+    newImg.src = announcement.offer.photos[j];
+    newImg.width = 80;
+    newImg.height = 60;
+    newLi.appendChild(newImg);
+    announcementElement.querySelector('.popup__pictures').appendChild(newLi);
   }
+
   announcementElement.querySelector('.popup__avatar').src = announcement.author.avatar;
   return announcementElement;
 };
@@ -114,7 +132,6 @@ var renderAnnouncementLabel = function (announcement) {
 
 var addAnnouncementsTextInDOM = function () {
   var fragment = document.createDocumentFragment();
-  generateRandomAnnouncement();
   fragment.appendChild(renderAnnouncement(announcements[0]));
   MAP.insertBefore(fragment, document.querySelector('.map__filters-container'));
 };
@@ -122,12 +139,12 @@ var addAnnouncementsTextInDOM = function () {
 
 var addAnnouncementsLabelInDOM = function () {
   var fragmentLabel = document.createDocumentFragment();
-  generateRandomAnnouncement();
   for (var j = 0; j < announcements.length; j++) {
     fragmentLabel.appendChild(renderAnnouncementLabel(announcements[j]));
   }
   dublicateListAnnouncementLabel.appendChild(fragmentLabel);
 };
 
+announcements = generateRandomAnnouncement();
 addAnnouncementsTextInDOM();
 addAnnouncementsLabelInDOM();
