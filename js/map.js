@@ -15,15 +15,9 @@ var locationY;
 var LABEL_WIDTH = 50;
 var LABEL_HEIGHT = 70;
 
-
+// Возвращает случайный элемент массива
 var generateRandomElement = function (arr) {
   return arr[Math.floor(Math.random() * arr.length)];
-};
-
-
-var getRandomNumberWithZero = function (min, max) {
-  var random = Math.floor(Math.random() * (max - min + 1)) + min;
-  return '0' + random;
 };
 
 
@@ -38,11 +32,14 @@ var setRandomElementInArray = function (array) {
   });
 };
 
-
 var generateRandomLengthArray = function (features) {
   var newArray = [];
   for (var c = 0; c <= Math.floor(Math.random() * features.length); c++) {
-    newArray[c] = generateRandomElement(features);
+    var el = generateRandomElement(features);
+    if (newArray.indexOf(el) !== -1) {
+      continue;
+    }
+    newArray.push(el);
   }
   return newArray;
 };
@@ -54,7 +51,7 @@ var generateRandomAnnouncement = function () {
     locationY = getRandomNumber(150, 500) - LABEL_HEIGHT;
     announcements[i] = {
       'author': {
-        'avatar': 'img/avatars/user' + getRandomNumberWithZero(1, 8) + '.png'
+        'avatar': 'img/avatars/user0' + getRandomNumber(1, 8) + '.png'
       },
       'offer': {
         'title': generateRandomElement(ANNOUNCEMENT_TITLES),
@@ -98,15 +95,14 @@ var renderAnnouncement = function (announcement) {
   for (var a = 0; a < featureItems.length; a++) {
     features.removeChild(featureItems[a]);
   }
-  console.log(announcement.offer.features);
+  // console.log(announcement.offer.features);
   // Фичи для каждого объявления (удаляет выбранные фичи, а должен добавлять)
   for (var i = 0; i < announcement.offer.features.length; i++) {
-    //announcementElement.querySelector('.feature--' + announcement.offer.features[i]).textContent = announcement.offer.features[i];
     var li = document.createElement('li');
     li.className = 'feature feature--' + announcement.offer.features[i];
     announcementElement.querySelector('.popup__features').appendChild(li);
   }
-  console.log(announcementElement.querySelector('.popup__features'));
+  // console.log(announcementElement.querySelector('.popup__features'));
 
   announcementElement.querySelector('.popup__description').textContent = announcement.offer.description;
 
