@@ -101,13 +101,14 @@ var renderAnnouncement = function (announcement) {
   for (var i = 0; i < announcement.offer.features.length; i++) {
     var li = document.createElement('li');
     li.className = 'feature feature--' + announcement.offer.features[i];
-    announcementElement.querySelector('.popup__features').appendChild(li);
+    features.appendChild(li);
   }
 
   announcementElement.querySelector('.popup__description').textContent = announcement.offer.description;
 
+  var photos = announcementElement.querySelector('.popup__pictures');
   var photoItem = announcementElement.querySelector('.popup__pictures li');
-  announcementElement.querySelector('.popup__pictures').removeChild(photoItem);
+  photos.removeChild(photoItem);
   for (var j = 0; j < announcement.offer.photos.length; j++) {
     var newLi = document.createElement('li');
     var newImg = document.createElement('img');
@@ -115,7 +116,7 @@ var renderAnnouncement = function (announcement) {
     newImg.width = 80;
     newImg.height = 60;
     newLi.appendChild(newImg);
-    announcementElement.querySelector('.popup__pictures').appendChild(newLi);
+    photos.appendChild(newLi);
   }
 
   announcementElement.querySelector('.popup__avatar').src = announcement.author.avatar;
