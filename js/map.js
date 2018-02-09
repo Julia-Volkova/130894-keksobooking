@@ -15,7 +15,7 @@ var locationY;
 var LABEL_WIDTH = 50;
 var LABEL_HEIGHT = 70;
 
-// Возвращает случайный элемент массива
+
 var generateRandomElement = function (arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 };
@@ -32,14 +32,15 @@ var setRandomElementInArray = function (array) {
   });
 };
 
+
 var generateRandomLengthArray = function (features) {
   var newArray = [];
   for (var c = 0; c <= Math.floor(Math.random() * features.length); c++) {
-    var el = generateRandomElement(features);
-    if (newArray.indexOf(el) !== -1) {
+    var featuresItem = generateRandomElement(features);
+    if (newArray.indexOf(featuresItem) !== -1) {
       continue;
     }
-    newArray.push(el);
+    newArray.push(featuresItem);
   }
   return newArray;
 };
@@ -75,6 +76,7 @@ var generateRandomAnnouncement = function () {
   return announcements;
 };
 
+
 var renderAnnouncement = function (announcement) {
   var announcementElement = duplicateAnnouncementTemplate.querySelector('.map__card').cloneNode(true);
   announcementElement.querySelector('h3').textContent = announcement.offer.title;
@@ -95,18 +97,17 @@ var renderAnnouncement = function (announcement) {
   for (var a = 0; a < featureItems.length; a++) {
     features.removeChild(featureItems[a]);
   }
-  // console.log(announcement.offer.features);
-  // Фичи для каждого объявления (удаляет выбранные фичи, а должен добавлять)
+
   for (var i = 0; i < announcement.offer.features.length; i++) {
     var li = document.createElement('li');
     li.className = 'feature feature--' + announcement.offer.features[i];
     announcementElement.querySelector('.popup__features').appendChild(li);
   }
-  // console.log(announcementElement.querySelector('.popup__features'));
 
   announcementElement.querySelector('.popup__description').textContent = announcement.offer.description;
 
-  // Добавление картинок в рандомном порядке (добавляется лишняя картинка)
+  var photoItem = announcementElement.querySelector('.popup__pictures li');
+  announcementElement.querySelector('.popup__pictures').removeChild(photoItem);
   for (var j = 0; j < announcement.offer.photos.length; j++) {
     var newLi = document.createElement('li');
     var newImg = document.createElement('img');
@@ -117,6 +118,7 @@ var renderAnnouncement = function (announcement) {
     announcementElement.querySelector('.popup__pictures').appendChild(newLi);
   }
 
+  console.log(announcementElement.querySelector('.popup__avatar'));
   announcementElement.querySelector('.popup__avatar').src = announcement.author.avatar;
   return announcementElement;
 };
@@ -144,6 +146,7 @@ var addAnnouncementsLabelInDOM = function () {
   }
   dublicateListAnnouncementLabel.appendChild(fragmentLabel);
 };
+
 
 announcements = generateRandomAnnouncement();
 addAnnouncementsTextInDOM();
