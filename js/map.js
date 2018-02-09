@@ -118,7 +118,6 @@ var renderAnnouncement = function (announcement) {
     announcementElement.querySelector('.popup__pictures').appendChild(newLi);
   }
 
-  console.log(announcementElement.querySelector('.popup__avatar'));
   announcementElement.querySelector('.popup__avatar').src = announcement.author.avatar;
   return announcementElement;
 };
