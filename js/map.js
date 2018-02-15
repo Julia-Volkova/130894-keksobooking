@@ -167,6 +167,7 @@ var fieldset = noticeForm.querySelectorAll('fieldset');
 var fieldsetArray = Array.from(fieldset);
 var adressInput = document.querySelector('#address');
 var isRenderAnnouncements = false;
+var resetForm = noticeForm.querySelector('.form__reset');
 
 // Активация карты
 var goToActiveMapState = function () {
@@ -175,6 +176,25 @@ var goToActiveMapState = function () {
   fieldsetArray.forEach(function (item) {
     item.removeAttribute('disabled');
   });
+};
+
+// Возвращение карты в исходное состояние
+var goToSourceMapState = function () {
+  MAP.classList.add('map--faded');
+  noticeForm.classList.add('notice__form--disabled');
+  fieldsetArray.forEach(function (item) {
+    item.setAttribute('disabled', 'disabled');
+  });
+
+  pinsCards.forEach(function (item) {
+    MAP.removeChild(item);
+  });
+
+  for (var i = 1; i < pinsLabels.length; i++) {
+    pinsLabels[i].remove();
+  }
+
+  isRenderAnnouncements = false;
 };
 
 // Определяю координату метки и записываю в строку адреса
@@ -224,6 +244,32 @@ var mainPinMoveHandler = function () {
 
   searchElements();
   showCurrentCard();
+  // validateForm();
 };
+mainPinMoveHandler();
 
-mainPin.addEventListener('mouseup', mainPinMoveHandler);
+// mainPin.addEventListener('mouseup', mainPinMoveHandler);
+
+// Сброс карты в исходное состояние
+resetForm.addEventListener('click', goToSourceMapState);
+
+// Валидация формы
+var validateForm = function () {
+  var timein = noticeForm.querySelector('#timein');
+  var timeout = noticeForm.querySelector('#timeout');
+  var selectFocusHandler = function (evt) {
+    var selectedOptionValue = evt.target.options[evt.target.selectedIndex].value;
+    timeout.options;
+
+    for (var j = 0; j < timeout.options.length; j++) {
+      timeout.options[0].removeAttribute('selected');
+      if (timeout.options[j].value === selectedOptionValue) {
+        console.log(timeout.options[j].selected);
+        timeout.options[j].setAttribute('selected', 'selected');
+      }
+    }
+  };
+
+  timein.addEventListener('change', selectFocusHandler);
+};
+validateForm();

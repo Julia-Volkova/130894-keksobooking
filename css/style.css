@@ -79,6 +79,22 @@ textarea
     background-color: white;
 }
 
+input[type=text]:invalid.js-validate,
+input[type=number]:invalid.js-validate,
+select:invalid.js-validate,
+textarea:invalid.js-validate
+{
+  border-color: red;
+}
+
+input[type=text]:valid.js-validate,
+input[type=number]:valid.js-validate,
+select:valid.js-validate,
+textarea:valid.js-validate
+{
+  border-color: green;
+}
+
 input[type=text]:hover,
 input[type=number]:hover,
 select:hover,
