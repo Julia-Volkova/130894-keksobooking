@@ -10,6 +10,7 @@ var announcements = [];
 var duplicateAnnouncementTemplate = document.querySelector('template').content;
 var dublicateListAnnouncementLabel = document.querySelector('.map__pins');
 var MAP = document.querySelector('.map');
+var EMPTY_SPACE_ON_MAP = 150;
 var locationX;
 var locationY;
 var LABEL_WIDTH = 50;
@@ -46,7 +47,7 @@ var generateRandomLengthArray = function (features) {
 var generateRandomAnnouncement = function () {
   for (var i = 0; i < ANNOUNCEMENTS_COUNT; i++) {
     locationX = getRandomNumber(300, 900) + LABEL_WIDTH / 2;
-    locationY = getRandomNumber(150, 500) - LABEL_HEIGHT;
+    locationY = getRandomNumber(150, 500) + LABEL_HEIGHT - EMPTY_SPACE_ON_MAP;
     announcements[i] = {
       'author': {
         'avatar': 'img/avatars/user0' + getRandomNumber(1, 8) + '.png'
@@ -76,7 +77,7 @@ var generateRandomAnnouncement = function () {
 // Копирование разметки карточки объявления
 var renderAnnouncement = function (announcement) {
   var announcementElement = duplicateAnnouncementTemplate.querySelector('.map__card').cloneNode(true);
-  announcementElement.className = 'map__card popup hidden'; // new
+  announcementElement.className = 'map__card popup hidden';
   announcementElement.querySelector('h3').textContent = announcement.offer.title;
   announcementElement.querySelector('small').textContent = announcement.offer.address;
   announcementElement.querySelector('.popup__price').textContent = announcement.offer.price + ' ₽/Ночь';
@@ -154,7 +155,7 @@ announcements = generateRandomAnnouncement();
 // addAnnouncementsTextInDOM();
 // addAnnouncementsLabelInDOM();
 
-
+//______________________________________________________________________________________________________________________
 // Events
 var mainPin = document.querySelector('.map__pin--main');
 var mainPinSize = 60;
@@ -199,11 +200,29 @@ var goToSourceMapState = function () {
 
 // Определяю координату метки и записываю в строку адреса
 var setCurrentAddress = function (element, pinWidth, pinHeight) {
-  var coordX = Math.round(element.getBoundingClientRect().left + pageXOffset) + pinWidth / 2;
-  var coordY = Math.round(element.getBoundingClientRect().top + pageYOffset) - pinHeight / 2;
+  var coordX = element.offsetLeft + pinWidth / 2;
+  var coordY = element.offsetTop + pinHeight / 2 - EMPTY_SPACE_ON_MAP;
   adressInput.value = coordX + ', ' + coordY;
 };
 setCurrentAddress(mainPin, mainPinSize, mainPinSize);
+
+// Закрытие текущей карточки объявления
+var closeCurrentCard = function () {
+  pinsCardsArray.forEach(function (item) {
+    if (!item.classList.contains('hidden')) {
+      var closeBtn = item.querySelector('.popup__close');
+      closeBtn.addEventListener('click', function () {
+        item.classList.add('hidden');
+      });
+      // closeBtn.addEventListener('keypress', function (evt) {
+      //   if (evt.keyCode === 27) {
+      //     item.classList.add('hidden');
+      //   }
+      // });
+    }
+  });
+};
+
 
 // Просмотр карточки объявления по клику на метку
 var showCurrentCard = function () {
@@ -215,6 +234,7 @@ var showCurrentCard = function () {
         }
       });
       pinsCardsArray[index].classList.remove('hidden');
+      closeCurrentCard();
     });
   });
 };
@@ -251,7 +271,7 @@ mainPin.addEventListener('mouseup', mainPinMoveHandler);
 // Сброс карты в исходное состояние
 resetForm.addEventListener('click', goToSourceMapState);
 
-
+//______________________________________________________________________________________________________________________
 // Валидация формы
 var validateForm = function () {
   var timein = noticeForm.querySelector('#timein');
@@ -261,27 +281,21 @@ var validateForm = function () {
   var roomsCount = noticeForm.querySelector('#room_number');
   var guestsCount = noticeForm.querySelector('#capacity');
 
-  // Синхронизация времени въезда и выезда
-  var selectChangeTimeInHandler = function (evt) {
+  var selectChangeTimeSettlementsHandler = function (time, evt) {
     var selectedOptionValue = evt.target.options[evt.target.selectedIndex].value;
-    for (var j = 0; j < timeout.options.length; j++) {
-      if (timeout.options[j].value === selectedOptionValue) {
-        timeout.selectedIndex = j;
+    for (var j = 0; j < time.options.length; j++) {
+      if (time.options[j].value === selectedOptionValue) {
+        time.selectedIndex = j;
       }
     }
   };
 
-  var selectChangeTimeOutHandler = function (evt) {
-    var selectedOptionValue = evt.target.options[evt.target.selectedIndex].value;
-    for (var j = 0; j < timein.options.length; j++) {
-      if (timein.options[j].value === selectedOptionValue) {
-        timein.selectedIndex = j;
-      }
-    }
-  };
-
-  timeout.addEventListener('change', selectChangeTimeOutHandler);
-  timein.addEventListener('change', selectChangeTimeInHandler, false);
+  timeout.addEventListener('change', function (evt) {
+    selectChangeTimeSettlementsHandler(timein, evt);
+  });
+  timein.addEventListener('change', function (evt) {
+    selectChangeTimeSettlementsHandler(timeout, evt);
+  });
 
 
   // Проверка цены в зависимости от типа жилья
@@ -329,35 +343,21 @@ var validateForm = function () {
   var selectChangeRoomsCountHandler = function () {
     var selectedOptionValue = roomsCount[roomsCount.selectedIndex].value;
     var guestsOptionArray = Array.from(guestsCount.options);
-    guestsOptionArray.forEach(function (item) {
-      item.disabled = true;
-    });
+    var guestsData = {
+      1: [1],
+      2: [1, 2],
+      3: [1, 2, 3],
+      100: [0]
+    };
 
-    if (selectedOptionValue === '1') {
-      guestsOptionArray.forEach(function (item) {
-        if (item.value === selectedOptionValue) {
-          item.disabled = false;
-        }
-      });
-    } else if (selectedOptionValue === '2') {
-      guestsOptionArray.forEach(function (item) {
-        if (item.value === selectedOptionValue || item.value === '1') {
-          item.disabled = false;
-        }
-      });
-    } else if (selectedOptionValue === '3') {
-      guestsOptionArray.forEach(function (item) {
-        if (item.value === selectedOptionValue || item.value === '2' || item.value === '1') {
-          item.disabled = false;
-        }
-      });
-    } else if (selectedOptionValue === '100') {
-      guestsOptionArray.forEach(function (item) {
-        if (item.value === '0') {
-          item.disabled = false;
-        }
-      });
-    }
+    guestsOptionArray.forEach(function (option) {
+      var roomCountArray = guestsData[selectedOptionValue];
+      if (roomCountArray.indexOf(+option.value) !== -1) {
+        option.disabled = false;
+      } else {
+        option.disabled = true;
+      }
+    });
     guestsCount.setCustomValidity('Количество гостей не поместится в стольких комнатах, выберите другой вариант');
     selectChangeGuestsCountHandler();
   };
