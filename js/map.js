@@ -200,9 +200,10 @@ var goToSourceMapState = function () {
 
 // Определяю координату метки и записываю в строку адреса
 var setCurrentAddress = function (element, pinWidth, pinHeight) {
-  var coordX = element.offsetLeft + pinWidth / 2;
-  var coordY = element.offsetTop + pinHeight / 2 - EMPTY_SPACE_ON_MAP;
+  var coordX = element.offsetLeft;
+  var coordY = element.offsetTop;
   adressInput.value = coordX + ', ' + coordY;
+  console.log(adressInput.value);
 };
 setCurrentAddress(mainPin, mainPinSize, mainPinSize);
 
