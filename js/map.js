@@ -203,7 +203,6 @@ var setCurrentAddress = function (element, pinWidth, pinHeight) {
   var coordX = element.offsetLeft;
   var coordY = element.offsetTop;
   adressInput.value = coordX + ', ' + coordY;
-  console.log(adressInput.value);
 };
 setCurrentAddress(mainPin, mainPinSize, mainPinSize);
 
