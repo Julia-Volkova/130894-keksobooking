@@ -3,12 +3,12 @@
 
 (function () {
   var validateForm = function () {
-    var timein = noticeForm.querySelector('#timein');
-    var timeout = noticeForm.querySelector('#timeout');
-    var realtyType = noticeForm.querySelector('#type');
-    var realtyCostPerNight = noticeForm.querySelector('#price');
-    var roomsCount = noticeForm.querySelector('#room_number');
-    var guestsCount = noticeForm.querySelector('#capacity');
+    var timein = window.map.noticeForm.querySelector('#timein');
+    var timeout = window.map.noticeForm.querySelector('#timeout');
+    var realtyType = window.map.noticeForm.querySelector('#type');
+    var realtyCostPerNight = window.map.noticeForm.querySelector('#price');
+    var roomsCount = window.map.noticeForm.querySelector('#room_number');
+    var guestsCount = window.map.noticeForm.querySelector('#capacity');
 
     var selectChangeTimeSettlementsHandler = function (time, evt) {
       var selectedOptionValue = evt.target.options[evt.target.selectedIndex].value;
@@ -25,7 +25,6 @@
     timein.addEventListener('change', function (evt) {
       selectChangeTimeSettlementsHandler(timeout, evt);
     });
-
 
     // Проверка цены в зависимости от типа жилья
     var inputKeydownRealtyCostHandler = function () {
