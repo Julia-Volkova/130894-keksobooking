@@ -14,7 +14,7 @@
     }
   };
 
-// Копирование разметки метки
+  // Копирование разметки метки
   var renderAnnouncementLabel = function (announcement) {
     var announcementLabel = window.card.duplicateAnnouncementTemplate.querySelector('.map__pin').cloneNode(true);
     announcementLabel.querySelector('img').src = announcement.author.avatar;

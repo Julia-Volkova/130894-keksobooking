@@ -13,7 +13,7 @@
     }
   };
 
-// Копирование разметки карточки объявления
+  // Копирование разметки карточки объявления
   var renderAnnouncement = function (announcement) {
     var announcementElement = window.card.duplicateAnnouncementTemplate.querySelector('.map__card').cloneNode(true);
     announcementElement.className = 'map__card popup hidden';

@@ -46,7 +46,7 @@
     return newArray;
   };
 
-// Генерация рандомных объектов объявлений в массив (8)
+  // Генерация рандомных объектов объявлений в массив (8)
   var generateRandomAnnouncement = function () {
     for (var i = 0; i < ANNOUNCEMENTS_COUNT; i++) {
       locationX = getRandomNumber(300, 900) + LABEL_WIDTH / 2;

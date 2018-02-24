@@ -15,10 +15,9 @@
   var fieldsetArray = Array.from(fieldset);
   var isRenderAnnouncements = false;
   var resetForm = window.map.noticeForm.querySelector('.form__reset');
-  var mainPinSize = 60;
   var adressInput = document.querySelector('#address');
 
-// Активация карты
+  // Активация карты
   var goToActiveMapState = function () {
     window.map.workspace.classList.remove('map--faded');
     window.map.noticeForm.classList.remove('notice__form--disabled');
@@ -27,7 +26,7 @@
     });
   };
 
-// Закрытие текущей карточки объявления
+  // Закрытие текущей карточки объявления
   var closeCurrentCard = function () {
     pinsCardsArray.forEach(function (item) {
       if (!item.classList.contains('hidden')) {
@@ -39,7 +38,7 @@
     });
   };
 
-// Просмотр карточки объявления по клику на метку
+  // Просмотр карточки объявления по клику на метку
   var showCurrentCard = function () {
     pinsLabelsArray.forEach(function (item, index) {
       item.addEventListener('click', function () {
@@ -55,14 +54,14 @@
   };
 
   // Определяю координату метки и записываю в строку адреса
-  var setCurrentAddress = function (element, pinWidth, pinHeight) {
+  var setCurrentAddress = function (element) {
     var coordX = element.offsetLeft;
     var coordY = element.offsetTop;
     adressInput.value = coordX + ', ' + coordY;
   };
-  setCurrentAddress(mainPin, mainPinSize, mainPinSize);
+  setCurrentAddress(mainPin);
 
-// Поиск элементов после активации карты
+  // Поиск элементов после активации карты
   var searchElements = function () {
     pinsLabels = window.pin.dublicateListAnnouncementLabel.querySelectorAll('.map__pin');
     pinsLabelsArray = Array.from(pinsLabels);
@@ -76,7 +75,7 @@
     pinsCardsArray = Array.from(pinsCards);
   };
 
-// Эмитация перетаскивания главной метки и выбор карточки по клику
+  // Эмитация перетаскивания главной метки и выбор карточки по клику
   var mainPinMoveHandler = function () {
     goToActiveMapState();
     if (isRenderAnnouncements === false) {
@@ -90,7 +89,7 @@
   };
   mainPin.addEventListener('mouseup', mainPinMoveHandler);
 
-// Возвращение карты в исходное состояние
+  // Возвращение карты в исходное состояние
   var goToSourceMapState = function () {
     window.map.workspace.classList.add('map--faded');
     window.map.noticeForm.classList.add('notice__form--disabled');
@@ -109,6 +108,6 @@
     isRenderAnnouncements = false;
   };
 
-// Сброс карты в исходное состояние
+  // Сброс карты в исходное состояние
   resetForm.addEventListener('click', goToSourceMapState);
 })();
