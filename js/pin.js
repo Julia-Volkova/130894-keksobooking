@@ -2,6 +2,14 @@
 'use strict';
 
 (function () {
+  // Копирование разметки метки
+  var renderAnnouncementLabel = function (announcement) {
+    var announcementLabel = window.card.duplicateAnnouncementTemplate.querySelector('.map__pin').cloneNode(true);
+    announcementLabel.querySelector('img').src = announcement.author.avatar;
+    announcementLabel.setAttribute('style', 'left: ' + announcement.location.y + 'px; top: ' + announcement.location.x + 'px;');
+    return announcementLabel;
+  };
+
   window.pin = {
     dublicateListAnnouncementLabel: document.querySelector('.map__pins'),
     // Добавление 8ми меток объявлений в дерево
@@ -12,13 +20,5 @@
       }
       window.pin.dublicateListAnnouncementLabel.appendChild(fragmentLabel);
     }
-  };
-
-  // Копирование разметки метки
-  var renderAnnouncementLabel = function (announcement) {
-    var announcementLabel = window.card.duplicateAnnouncementTemplate.querySelector('.map__pin').cloneNode(true);
-    announcementLabel.querySelector('img').src = announcement.author.avatar;
-    announcementLabel.setAttribute('style', 'left: ' + announcement.location.y + 'px; top: ' + announcement.location.x + 'px;');
-    return announcementLabel;
   };
 })();

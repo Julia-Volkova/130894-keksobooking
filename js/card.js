@@ -2,17 +2,6 @@
 'use strict';
 
 (function () {
-  window.card = {
-    duplicateAnnouncementTemplate: document.querySelector('template').content,
-    addAnnouncementsTextInDOM: function () {
-      var fragment = document.createDocumentFragment();
-      window.announcements.forEach(function (item) {
-        fragment.appendChild(renderAnnouncement(item));
-      });
-      window.map.workspace.insertBefore(fragment, document.querySelector('.map__filters-container'));
-    }
-  };
-
   // Копирование разметки карточки объявления
   var renderAnnouncement = function (announcement) {
     var announcementElement = window.card.duplicateAnnouncementTemplate.querySelector('.map__card').cloneNode(true);
@@ -59,5 +48,16 @@
 
     announcementElement.querySelector('.popup__avatar').src = announcement.author.avatar;
     return announcementElement;
+  };
+
+  window.card = {
+    duplicateAnnouncementTemplate: document.querySelector('template').content,
+    addAnnouncementsTextInDOM: function () {
+      var fragment = document.createDocumentFragment();
+      window.announcements.forEach(function (item) {
+        fragment.appendChild(renderAnnouncement(item));
+      });
+      window.map.workspace.insertBefore(fragment, document.querySelector('.map__filters-container'));
+    }
   };
 })();

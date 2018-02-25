@@ -2,8 +2,6 @@
 'use strict';
 
 (function () {
-  window.announcements = [];
-
   var ANNOUNCEMENTS_COUNT = 8;
   var ANNOUNCEMENT_TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
   var ANNOUNCEMENT_TYPES = ['flat', 'house', 'bungalo'];
@@ -45,10 +43,11 @@
 
   // Генерация рандомных объектов объявлений в массив (8)
   var generateRandomAnnouncement = function () {
+    var announcements = [];
     for (var i = 0; i < ANNOUNCEMENTS_COUNT; i++) {
       locationX = getRandomNumber(300, 900) + LABEL_WIDTH / 2;
       locationY = getRandomNumber(150, 500) + LABEL_HEIGHT - EMPTY_SPACE_ON_MAP;
-      window.announcements[i] = {
+      announcements[i] = {
         'author': {
           'avatar': 'img/avatars/user0' + getRandomNumber(1, 8) + '.png'
         },
@@ -71,7 +70,7 @@
         }
       };
     }
-    return window.announcements;
+    return announcements;
   };
 
   // Геренация массива объявлений и добавление всех элементов в дерево
