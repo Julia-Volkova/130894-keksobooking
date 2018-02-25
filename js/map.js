@@ -16,6 +16,11 @@
   var isRenderAnnouncements = false;
   var resetForm = window.map.noticeForm.querySelector('.form__reset');
   var adressInput = document.querySelector('#address');
+  var filters = window.map.workspace.querySelector('.map__filters-container');
+  var MAP_BORDER_TOP = 135;
+  var MAIN_PIN_PADDING = 20;
+  var LABEL_WIDTH = 50;
+  var LABEL_HEIGHT = 70;
 
   // Активация карты
   var goToActiveMapState = function () {
@@ -53,13 +58,20 @@
     });
   };
 
-  // Определяю координату метки и записываю в строку адреса
-  var setCurrentAddress = function (element) {
+  // Определяю координату главной метки неактивной карты и записываю в строку адреса
+  var setCurrentAddressNotActive = function (element) {
     var coordX = element.offsetLeft;
     var coordY = element.offsetTop;
     adressInput.value = coordX + ', ' + coordY;
   };
-  setCurrentAddress(mainPin);
+  setCurrentAddressNotActive(mainPin);
+
+  // Определяю координату главной метки активной карты и записываю в строку адреса
+  var setCurrentAddressActive = function (element) {
+    var coordX = element.offsetLeft + LABEL_WIDTH / 2;
+    var coordY = element.offsetTop + LABEL_HEIGHT;
+    adressInput.value = coordX + ', ' + coordY;
+  };
 
   // Поиск элементов после активации карты
   var searchElements = function () {
@@ -75,7 +87,7 @@
     pinsCardsArray = Array.from(pinsCards);
   };
 
-  // Эмитация перетаскивания главной метки и выбор карточки по клику
+  // Перетаскивания главной метки и выбор карточки по клику
   var mainPinMoveHandler = function (evt) {
     evt.preventDefault();
     var startCoords = {
@@ -93,14 +105,29 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
-      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
-      setCurrentAddress(mainPin);
+      if (mainPin.offsetTop > MAP_BORDER_TOP) {
+        mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+      } else {
+        mainPin.style.top = (MAP_BORDER_TOP + 1) + 'px';
+      }
+      if (mainPin.offsetTop > window.map.workspace.offsetHeight - filters.offsetHeight - (mainPin.offsetHeight - MAIN_PIN_PADDING)) {
+        mainPin.style.top = (window.map.workspace.offsetHeight - filters.offsetHeight - (mainPin.offsetHeight - MAIN_PIN_PADDING) - 1) + 'px';
+      }
+
+      if (mainPin.offsetLeft > mainPin.offsetWidth / 2) {
+        mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+      } else {
+        mainPin.style.left = (mainPin.offsetWidth / 2 + 1) + 'px';
+      }
+      if (mainPin.offsetLeft > window.map.workspace.offsetWidth - mainPin.offsetWidth / 2) {
+        mainPin.style.left = (window.map.workspace.offsetWidth - (mainPin.offsetWidth / 2 + 1)) + 'px';
+      }
+      setCurrentAddressActive(mainPin);
     };
 
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
-      setCurrentAddress(mainPin);
+      setCurrentAddressActive(mainPin);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
