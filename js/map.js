@@ -76,7 +76,38 @@
   };
 
   // Эмитация перетаскивания главной метки и выбор карточки по клику
-  var mainPinMoveHandler = function () {
+  var mainPinMoveHandler = function (evt) {
+    evt.preventDefault();
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+      setCurrentAddress(mainPin);
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+      setCurrentAddress(mainPin);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+
     goToActiveMapState();
     if (isRenderAnnouncements === false) {
       window.pin.addAnnouncementsLabelInDOM();
@@ -87,7 +118,7 @@
     searchElements();
     showCurrentCard();
   };
-  mainPin.addEventListener('mouseup', mainPinMoveHandler);
+  mainPin.addEventListener('mousedown', mainPinMoveHandler);
 
   // Возвращение карты в исходное состояние
   var goToSourceMapState = function () {
@@ -106,6 +137,7 @@
     }
 
     isRenderAnnouncements = false;
+    mainPin.removeAttribute('style');
   };
 
   // Сброс карты в исходное состояние
