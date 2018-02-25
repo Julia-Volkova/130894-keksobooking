@@ -2,10 +2,7 @@
 'use strict';
 
 (function () {
-
-  window.data = {
-    announcements: []
-  };
+  window.announcements = [];
 
   var ANNOUNCEMENTS_COUNT = 8;
   var ANNOUNCEMENT_TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
@@ -51,7 +48,7 @@
     for (var i = 0; i < ANNOUNCEMENTS_COUNT; i++) {
       locationX = getRandomNumber(300, 900) + LABEL_WIDTH / 2;
       locationY = getRandomNumber(150, 500) + LABEL_HEIGHT - EMPTY_SPACE_ON_MAP;
-      window.data.announcements[i] = {
+      window.announcements[i] = {
         'author': {
           'avatar': 'img/avatars/user0' + getRandomNumber(1, 8) + '.png'
         },
@@ -74,9 +71,9 @@
         }
       };
     }
-    return window.data.announcements;
+    return window.announcements;
   };
 
   // Геренация массива объявлений и добавление всех элементов в дерево
-  window.data.announcements = generateRandomAnnouncement();
+  window.announcements = generateRandomAnnouncement();
 })();

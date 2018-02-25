@@ -6,7 +6,7 @@
     duplicateAnnouncementTemplate: document.querySelector('template').content,
     addAnnouncementsTextInDOM: function () {
       var fragment = document.createDocumentFragment();
-      window.data.announcements.forEach(function (item) {
+      window.announcements.forEach(function (item) {
         fragment.appendChild(renderAnnouncement(item));
       });
       window.map.workspace.insertBefore(fragment, document.querySelector('.map__filters-container'));

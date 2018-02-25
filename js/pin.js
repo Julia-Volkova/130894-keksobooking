@@ -7,8 +7,8 @@
     // Добавление 8ми меток объявлений в дерево
     addAnnouncementsLabelInDOM: function () {
       var fragmentLabel = document.createDocumentFragment();
-      for (var j = 0; j < window.data.announcements.length; j++) {
-        fragmentLabel.appendChild(renderAnnouncementLabel(window.data.announcements[j]));
+      for (var j = 0; j < window.announcements.length; j++) {
+        fragmentLabel.appendChild(renderAnnouncementLabel(window.announcements[j]));
       }
       window.pin.dublicateListAnnouncementLabel.appendChild(fragmentLabel);
     }
