@@ -101,4 +101,6 @@
     guestsCount.addEventListener('change', selectChangeGuestsCountHandler);
   };
   validateForm();
+
+
 })();

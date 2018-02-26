@@ -53,11 +53,26 @@
   window.card = {
     duplicateAnnouncementTemplate: document.querySelector('template').content,
     addAnnouncementsTextInDOM: function () {
-      var fragment = document.createDocumentFragment();
-      window.announcements.forEach(function (item) {
-        fragment.appendChild(renderAnnouncement(item));
-      });
-      window.map.workspace.insertBefore(fragment, document.querySelector('.map__filters-container'));
+      var successHandler = function (cards) {
+        var fragment = document.createDocumentFragment();
+        for (var i = 0; i < cards.length; i++) {
+          fragment.appendChild(renderAnnouncement(cards[i]));
+        }
+        window.map.workspace.insertBefore(fragment, document.querySelector('.map__filters-container'));
+      };
+      var errorHandler = function (errorMessage) {
+        var node = document.createElement('div');
+        node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+        node.style.position = 'absolute';
+        node.style.left = 0;
+        node.style.right = 0;
+        node.style.fontSize = '30px';
+        node.style.padding = '30px 0';
+        node.textContent = errorMessage;
+        document.body.insertAdjacentElement('afterbegin', node);
+      };
+
+      window.backend.load(successHandler, errorHandler);
     }
   };
 })();

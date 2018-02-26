@@ -12,13 +12,29 @@
 
   window.pin = {
     dublicateListAnnouncementLabel: document.querySelector('.map__pins'),
-    // Добавление 8ми меток объявлений в дерево
+
+    // Добавление 8ми меток объявлений в дерево на основе данных с сервера
     addAnnouncementsLabelInDOM: function () {
-      var fragmentLabel = document.createDocumentFragment();
-      for (var j = 0; j < window.announcements.length; j++) {
-        fragmentLabel.appendChild(renderAnnouncementLabel(window.announcements[j]));
-      }
-      window.pin.dublicateListAnnouncementLabel.appendChild(fragmentLabel);
+      var successHandler = function (pins) {
+        var fragmentLabel = document.createDocumentFragment();
+        for (var i = 0; i < pins.length; i++) {
+          fragmentLabel.appendChild(renderAnnouncementLabel(pins[i]));
+        }
+        window.pin.dublicateListAnnouncementLabel.appendChild(fragmentLabel);
+      };
+      var errorHandler = function (errorMessage) {
+        var node = document.createElement('div');
+        node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+        node.style.position = 'absolute';
+        node.style.left = 0;
+        node.style.right = 0;
+        node.style.fontSize = '30px';
+        node.style.padding = '30px 0';
+        node.textContent = errorMessage;
+        document.body.insertAdjacentElement('afterbegin', node);
+      };
+
+      window.backend.load(successHandler, errorHandler);
     }
   };
 })();

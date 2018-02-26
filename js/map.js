@@ -142,13 +142,16 @@
     }
     isRenderAnnouncements = true;
 
-    searchElements();
-    showCurrentCard();
+    setTimeout(function () {
+      searchElements();
+      showCurrentCard();
+    }, 1000);
   };
   mainPin.addEventListener('mousedown', mainPinMoveHandler);
 
   // Возвращение карты в исходное состояние
   var goToSourceMapState = function () {
+    window.map.noticeForm.reset();
     window.map.workspace.classList.add('map--faded');
     window.map.noticeForm.classList.add('notice__form--disabled');
     fieldsetArray.forEach(function (item) {
@@ -169,4 +172,30 @@
 
   // Сброс карты в исходное состояние
   resetForm.addEventListener('click', goToSourceMapState);
+
+  // Отправка данных о новом объявлении на сервер и ресет формы
+  var successLoad = function () {
+    window.map.noticeForm.reset();
+    window.map.noticeForm.classList.add('notice__form--disabled');
+    fieldsetArray.forEach(function (item) {
+      item.setAttribute('disabled', 'disabled');
+    });
+  };
+
+  var errorLoad = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+    node.style.padding = '30px 0';
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
+  window.map.noticeForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(window.map.noticeForm), successLoad, errorLoad);
+  });
 })();
