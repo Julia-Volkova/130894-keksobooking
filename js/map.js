@@ -17,10 +17,14 @@
   var resetForm = window.map.noticeForm.querySelector('.form__reset');
   var adressInput = document.querySelector('#address');
   var filters = window.map.workspace.querySelector('.map__filters-container');
-  var MAP_BORDER_TOP = 135;
-  var MAIN_PIN_PADDING = 20;
-  var LABEL_WIDTH = 50;
+  var LABEL_WIDTH = 62;
   var LABEL_HEIGHT = 70;
+  var MAP_LIMITS = {
+    top: 150,
+    right: 1167,
+    bottom: 500,
+    left: 33
+  };
 
   // Активация карты
   var goToActiveMapState = function () {
@@ -68,8 +72,8 @@
 
   // Определяю координату главной метки активной карты и записываю в строку адреса
   var setCurrentAddressActive = function (element) {
-    var coordX = element.offsetLeft + LABEL_WIDTH / 2;
-    var coordY = element.offsetTop + LABEL_HEIGHT;
+    var coordX = element.offsetLeft;
+    var coordY = element.offsetTop;
     adressInput.value = coordX + ', ' + coordY;
   };
 
@@ -89,6 +93,7 @@
 
   // Перетаскивания главной метки и выбор карточки по клику
   var mainPinMoveHandler = function (evt) {
+
     evt.preventDefault();
     var startCoords = {
       x: evt.clientX,
@@ -105,23 +110,25 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-      if (mainPin.offsetTop > MAP_BORDER_TOP) {
-        mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
-      } else {
-        mainPin.style.top = (MAP_BORDER_TOP + 1) + 'px';
+
+      // Ограничение карты по-вертикали
+      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+      if (mainPin.offsetTop < MAP_LIMITS.top) {
+        mainPin.style.top = MAP_LIMITS.top + 'px';
       }
-      if (mainPin.offsetTop > window.map.workspace.offsetHeight - filters.offsetHeight - (mainPin.offsetHeight - MAIN_PIN_PADDING)) {
-        mainPin.style.top = (window.map.workspace.offsetHeight - filters.offsetHeight - (mainPin.offsetHeight - MAIN_PIN_PADDING) - 1) + 'px';
+      else if (mainPin.offsetTop > MAP_LIMITS.bottom) {
+        mainPin.style.top = MAP_LIMITS.bottom + 'px';
       }
 
-      if (mainPin.offsetLeft > mainPin.offsetWidth / 2) {
-        mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
-      } else {
-        mainPin.style.left = (mainPin.offsetWidth / 2 + 1) + 'px';
+      // Ограничение карты по-горизонтали
+      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+      if (mainPin.offsetLeft < MAP_LIMITS.left) {
+        mainPin.style.left = MAP_LIMITS.left + 'px';
       }
-      if (mainPin.offsetLeft > window.map.workspace.offsetWidth - mainPin.offsetWidth / 2) {
-        mainPin.style.left = (window.map.workspace.offsetWidth - (mainPin.offsetWidth / 2 + 1)) + 'px';
+      else if (mainPin.offsetLeft > MAP_LIMITS.right) {
+        mainPin.style.left = MAP_LIMITS.right + 'px';
       }
+
       setCurrentAddressActive(mainPin);
     };
 
