@@ -203,6 +203,6 @@
 
   window.map.noticeForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.save(new FormData(window.map.noticeForm), successLoad, errorLoad);
+    window.backend.save(successLoad, errorLoad, 'https://js.dump.academy/keksobooking', 'POST', new FormData(window.map.noticeForm));
   });
 })();

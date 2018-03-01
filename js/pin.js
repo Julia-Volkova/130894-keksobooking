@@ -34,7 +34,7 @@
         document.body.insertAdjacentElement('afterbegin', node);
       };
 
-      window.backend.load(successHandler, errorHandler);
+      window.backend.load(successHandler, errorHandler, 'https://js.dump.academy/keksobooking/data', 'GET');
     }
   };
 })();
