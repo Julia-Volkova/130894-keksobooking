@@ -18,7 +18,7 @@
   var adressInput = document.querySelector('#address');
   var filters = window.map.workspace.querySelector('.map__filters-container');
   var LABEL_WIDTH = 62;
-  var LABEL_HEIGHT = 70;
+  var LABEL_HEIGHT = 84;
   var MAP_LIMITS = {
     top: 150,
     right: 1167,
@@ -73,19 +73,15 @@
   // Определяю координату главной метки активной карты и записываю в строку адреса
   var setCurrentAddressActive = function (element) {
     var coordX = element.offsetLeft;
-    var coordY = element.offsetTop;
+    var coordY = element.offsetTop + LABEL_HEIGHT / 2;
+    console.log(coordY);
     adressInput.value = coordX + ', ' + coordY;
   };
 
   // Поиск элементов после активации карты
   var searchElements = function () {
-    pinsLabels = window.pin.dublicateListAnnouncementLabel.querySelectorAll('.map__pin');
+    pinsLabels = window.pin.dublicateListAnnouncementLabel.querySelectorAll('.map__pin:not(.map__pin--main)');
     pinsLabelsArray = Array.from(pinsLabels);
-    pinsLabelsArray.forEach(function (item, index) {
-      if (item.classList.contains('map__pin--main')) {
-        pinsLabelsArray.splice(index, 1);
-      }
-    });
 
     pinsCards = window.map.workspace.querySelectorAll('.map__card');
     pinsCardsArray = Array.from(pinsCards);
@@ -93,7 +89,6 @@
 
   // Перетаскивания главной метки и выбор карточки по клику
   var mainPinMoveHandler = function (evt) {
-
     evt.preventDefault();
     var startCoords = {
       x: evt.clientX,
@@ -113,12 +108,14 @@
 
       // Ограничение карты по-вертикали
       mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
-      if (mainPin.offsetTop < MAP_LIMITS.top) {
-        mainPin.style.top = MAP_LIMITS.top + 'px';
+
+      if (mainPin.offsetTop + LABEL_HEIGHT / 2 < 150) {
+        mainPin.style.top = 150 - LABEL_HEIGHT / 2 + 'px';
       }
-      else if (mainPin.offsetTop > MAP_LIMITS.bottom) {
-        mainPin.style.top = MAP_LIMITS.bottom + 'px';
+      else if (mainPin.offsetTop + LABEL_HEIGHT / 2 > 500) {
+        mainPin.style.top = 500 - LABEL_HEIGHT / 2 + 'px';
       }
+
 
       // Ограничение карты по-горизонтали
       mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
@@ -181,28 +178,16 @@
   resetForm.addEventListener('click', goToSourceMapState);
 
   // Отправка данных о новом объявлении на сервер и ресет формы
-  var successLoad = function () {
-    window.map.noticeForm.reset();
-    window.map.noticeForm.classList.add('notice__form--disabled');
-    fieldsetArray.forEach(function (item) {
-      item.setAttribute('disabled', 'disabled');
-    });
+  var onLoad = function () {
+    goToSourceMapState();
   };
 
-  var errorLoad = function (errorMessage) {
-    var node = document.createElement('div');
-    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
-    node.style.position = 'absolute';
-    node.style.left = 0;
-    node.style.right = 0;
-    node.style.fontSize = '30px';
-    node.style.padding = '30px 0';
-    node.textContent = errorMessage;
-    document.body.insertAdjacentElement('afterbegin', node);
+  var onError = function (message) {
+    window.errorMessage(message);
   };
 
   window.map.noticeForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.save(successLoad, errorLoad, 'https://js.dump.academy/keksobooking', 'POST', new FormData(window.map.noticeForm));
+    window.backend.save(new FormData(window.map.noticeForm), onLoad, onError);
   });
 })();
