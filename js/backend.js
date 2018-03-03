@@ -1,9 +1,10 @@
 'use strict';
-var SUCCESS = 200;
-var TIMEOUT = 10000;
-var xhr = new XMLHttpRequest();
 
 (function () {
+  var SUCCESS = 200;
+  var TIMEOUT = 10000;
+  var xhr = new XMLHttpRequest();
+
   var createXHR = function (onLoad, onError) {
     xhr.timeout = TIMEOUT;
     xhr.responseType = 'json';
