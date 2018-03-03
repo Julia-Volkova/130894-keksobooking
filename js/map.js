@@ -16,8 +16,6 @@
   var isRenderAnnouncements = false;
   var resetForm = window.map.noticeForm.querySelector('.form__reset');
   var adressInput = document.querySelector('#address');
-  var filters = window.map.workspace.querySelector('.map__filters-container');
-  var LABEL_WIDTH = 62;
   var LABEL_HEIGHT = 84;
   var MAP_LIMITS = {
     top: 150,
@@ -42,6 +40,11 @@
         var closeBtn = item.querySelector('.popup__close');
         closeBtn.addEventListener('click', function () {
           item.classList.add('hidden');
+        });
+        document.addEventListener('keydown', function (evt) {
+          if (evt.keyCode === 27) {
+            item.classList.add('hidden');
+          }
         });
       }
     });
@@ -74,13 +77,12 @@
   var setCurrentAddressActive = function (element) {
     var coordX = element.offsetLeft;
     var coordY = element.offsetTop + LABEL_HEIGHT / 2;
-    console.log(coordY);
     adressInput.value = coordX + ', ' + coordY;
   };
 
   // Поиск элементов после активации карты
   var searchElements = function () {
-    pinsLabels = window.pin.dublicateListAnnouncementLabel.querySelectorAll('.map__pin:not(.map__pin--main)');
+    pinsLabels = window.pin.ListAnnouncementLabel.querySelectorAll('.map__pin:not(.map__pin--main)');
     pinsLabelsArray = Array.from(pinsLabels);
 
     pinsCards = window.map.workspace.querySelectorAll('.map__card');
@@ -107,7 +109,11 @@
       };
 
       // Ограничение карты по-вертикали
-      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+      if (startCoords.y < 150 || startCoords.y > 500) {
+        mainPin.style.top = mainPin.offsetTop + 'px';
+      } else {
+        mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+      }
 
       if (mainPin.offsetTop + LABEL_HEIGHT / 2 < 150) {
         mainPin.style.top = 150 - LABEL_HEIGHT / 2 + 'px';
@@ -139,17 +145,17 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
 
-    goToActiveMapState();
     if (isRenderAnnouncements === false) {
+      goToActiveMapState();
       window.pin.addAnnouncementsLabelInDOM();
       window.card.addAnnouncementsTextInDOM();
-    }
-    isRenderAnnouncements = true;
+      isRenderAnnouncements = true;
 
-    setTimeout(function () {
-      searchElements();
-      showCurrentCard();
-    }, 1000);
+      setTimeout(function () {
+        searchElements();
+        showCurrentCard();
+      }, 1000);
+    }
   };
   mainPin.addEventListener('mousedown', mainPinMoveHandler);
 

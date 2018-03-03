@@ -4,7 +4,7 @@
 (function () {
   // Копирование разметки карточки объявления
   var renderAnnouncement = function (announcement) {
-    var announcementElement = window.card.duplicateAnnouncementTemplate.querySelector('.map__card').cloneNode(true);
+    var announcementElement = window.card.AnnouncementTemplate.querySelector('.map__card').cloneNode(true);
     announcementElement.className = 'map__card popup hidden';
     announcementElement.querySelector('h3').textContent = announcement.offer.title;
     announcementElement.querySelector('small').textContent = announcement.offer.address;
@@ -51,12 +51,12 @@
   };
 
   window.card = {
-    duplicateAnnouncementTemplate: document.querySelector('template').content,
+    AnnouncementTemplate: document.querySelector('template').content,
     addAnnouncementsTextInDOM: function () {
       var fragment = document.createDocumentFragment();
-      for (var i = 0; i < window.data.length; i++) {
-        fragment.appendChild(renderAnnouncement(window.data[i]));
-      }
+      window.data.forEach(function (it) {
+        fragment.appendChild(renderAnnouncement(it));
+      });
       window.map.workspace.insertBefore(fragment, document.querySelector('.map__filters-container'));
     }
   };
