@@ -13,12 +13,15 @@
   window.pin = {
     ListAnnouncementLabel: document.querySelector('.map__pins'),
 
-    // Добавление 8ми меток объявлений в дерево на основе данных с сервера
-    addAnnouncementsLabelInDOM: function () {
+    // Добавление 5ти меток объявлений в дерево на основе данных с сервера или выбранных фильтров
+    addAnnouncementsLabelInDOM: function (announcements) {
       var fragmentLabel = document.createDocumentFragment();
-      window.data.forEach(function (it) {
-        fragmentLabel.appendChild(renderAnnouncementLabel(it));
-      });
+      for (var i = 0; i <= 5; i++) {
+        fragmentLabel.appendChild(renderAnnouncementLabel(announcements[i]));
+      }
+      //window.data.forEach(function (it) {
+      //  fragmentLabel.appendChild(renderAnnouncementLabel(it));
+      //});
       window.pin.ListAnnouncementLabel.appendChild(fragmentLabel);
     }
   };

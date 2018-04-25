@@ -11,6 +11,7 @@
   var pinsLabelsArray = [];
   var pinsCards = '';
   var pinsCardsArray = [];
+  var features = window.map.workspace.querySelector('.features');
   var fieldset = window.map.noticeForm.querySelectorAll('fieldset');
   var fieldsetArray = Array.from(fieldset);
   var isRenderAnnouncements = false;
@@ -31,6 +32,7 @@
     fieldsetArray.forEach(function (item) {
       item.removeAttribute('disabled');
     });
+    features.removeAttribute('disabled');
   };
 
   // Закрытие текущей карточки объявления
@@ -147,8 +149,8 @@
 
     if (isRenderAnnouncements === false) {
       goToActiveMapState();
-      window.pin.addAnnouncementsLabelInDOM();
-      window.card.addAnnouncementsTextInDOM();
+      window.pin.addAnnouncementsLabelInDOM(window.data);
+      window.card.addAnnouncementsTextInDOM(window.data);
       isRenderAnnouncements = true;
 
       setTimeout(function () {
