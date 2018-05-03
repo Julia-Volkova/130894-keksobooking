@@ -33,6 +33,7 @@
       item.removeAttribute('disabled');
     });
     features.removeAttribute('disabled');
+    window.filters();
   };
 
   // Закрытие текущей карточки объявления
