@@ -12,14 +12,15 @@
     var roomsSelect = document.querySelector('#housing-rooms');
     var guestsSelect = document.querySelector('#housing-guests');
     var selectedOptions = {
-      type: '',
-      price: '',
-      rooms: '',
-      guests: '',
+      type: 'any',
+      price: 'any',
+      rooms: 'any',
+      guests: 'any',
       features: []
     };
     var features = document.querySelectorAll('[name="features"]');
     var featuresArray = Array.from(features);
+
 
     // Добавление веса объявлению при наибольшей схожести
     var getRank = function (announcement) {
@@ -31,13 +32,13 @@
 
       if (announcement.offer.price < 10000 && selectedOptions.price === 'low') {
         rank += 1;
-        // console.log('Совпала стоимость');
+        //console.log('Совпала стоимость');
       } else if ((announcement.offer.price >= 10000 || announcement.offer.price < 50000) && selectedOptions.price === 'middle') {
-        rank += 2;
-        // console.log('Совпала стоимость');
+        rank += 1;
+        //console.log('Совпала стоимость');
       } else if (announcement.offer.price >= 50000 && selectedOptions.price === 'high') {
-        rank += 3;
-        // console.log('Совпала стоимость');
+        rank += 1;
+        //console.log('Совпала стоимость');
       }
 
       if (+announcement.offer.guests === +selectedOptions.guests) {
@@ -54,25 +55,62 @@
 
     // Обновление и перерисовка карточек с метками на карте
     var updateAnnouncements = function () {
-      var result = filteredAnnouncements.sort(function (left, right) {
-        var rangDiff = getRank(right) - getRank(left);
-        return rangDiff;
-      });
-      if (result.length < 5) {
-        result = result.concat(window.data);
+      //var result = filteredAnnouncements.sort(function (left, right) {
+      //  return getRank(right) - getRank(left);
+      //});
+      var result = '';
+      if (selectedOptions.type !== 'any') {
+        result = filteredAnnouncements.filter(function (item) {
+          return item.offer.type === selectedOptions.type;
+        });
       }
+
+      if (selectedOptions.price !== 'any') {
+        result = result.filter(function (item) {
+          if (selectedOptions.price === 'low') {
+            return item.offer.price < 10000;
+          } else if (selectedOptions.price === 'middle') {
+            return 50000 < item.offer.price > 10000;
+          } else if (selectedOptions.price === 'high') {
+            return item.offer.price > 50000;
+          }
+        });
+      }
+
+      if (selectedOptions.guests !== 'any') {
+        result = result.filter(function (item) {
+          return item.offer.guests === selectedOptions.guests;
+        });
+      }
+      console.log(result);
+
+      if (selectedOptions.rooms !== 'any') {
+        result = result.filter(function (item) {
+          item.offer.rooms === selectedOptions.rooms;
+        });
+      }
+
+      var pins = window.pin.ListAnnouncementLabel.querySelectorAll('.map__pin:not(.map__pin--main)');
+      var pinsArray = Array.from(pins);
+      var cards = document.querySelectorAll('.map__card');
+      var cardsArray = Array.from(cards);
+
+      pinsArray.forEach(function (it) {
+        it.remove();
+      });
+
+      cardsArray.forEach(function (elem) {
+        elem.remove();
+      });
+
       window.pin.addAnnouncementsLabelInDOM(result);
       window.card.addAnnouncementsTextInDOM(result);
-      // result.forEach(function (it) {
-      //   console.log('Тип: - ' +  it.offer.type);
-      //   console.log('Цена: - ' +  it.offer.price);
-      //   console.log('Комнаты: - ' +  it.offer.rooms);
-      //   console.log('Гости: - ' +  it.offer.guests);
-      //   console.log('Фичи: - ' +  it.offer.features);
-      // });
+
+
+      return result;
     };
 
-    // Добавляю изменения в фильтрах в объект текущего состояния фмльтра
+    // Добавляю изменения в фильтрах в объект текущего состояния фильтра
     featuresArray.forEach(function (item) {
       item.addEventListener('click', function (evt) {
         if (evt.target.checked) {

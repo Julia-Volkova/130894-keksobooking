@@ -19,9 +19,7 @@
       for (var i = 0; i <= 5; i++) {
         fragmentLabel.appendChild(renderAnnouncementLabel(announcements[i]));
       }
-      //window.data.forEach(function (it) {
-      //  fragmentLabel.appendChild(renderAnnouncementLabel(it));
-      //});
+
       window.pin.ListAnnouncementLabel.appendChild(fragmentLabel);
     }
   };

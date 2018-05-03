@@ -59,9 +59,7 @@
       for (var b = 0; b <= 5; b++) {
         fragment.appendChild(renderAnnouncement(announcements[b]));
       }
-      //window.data.forEach(function (it) {
-      //  fragment.appendChild(renderAnnouncement(it));
-      //});
+
       window.map.workspace.insertBefore(fragment, document.querySelector('.map__filters-container'));
     }
   };
