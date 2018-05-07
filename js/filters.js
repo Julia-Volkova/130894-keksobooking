@@ -21,44 +21,9 @@
     var features = document.querySelectorAll('[name="features"]');
     var featuresArray = Array.from(features);
 
-
-    // Добавление веса объявлению при наибольшей схожести
-    var getRank = function (announcement) {
-      var rank = 0;
-      if (announcement.offer.type === selectedOptions.type) {
-        rank += 1;
-        // console.log('Совпал тип');
-      }
-
-      if (announcement.offer.price < 10000 && selectedOptions.price === 'low') {
-        rank += 1;
-        //console.log('Совпала стоимость');
-      } else if ((announcement.offer.price >= 10000 || announcement.offer.price < 50000) && selectedOptions.price === 'middle') {
-        rank += 1;
-        //console.log('Совпала стоимость');
-      } else if (announcement.offer.price >= 50000 && selectedOptions.price === 'high') {
-        rank += 1;
-        //console.log('Совпала стоимость');
-      }
-
-      if (+announcement.offer.guests === +selectedOptions.guests) {
-        rank += 1;
-        // console.log('Совпало количество гостей');
-      }
-
-      if (+announcement.offer.rooms === +selectedOptions.rooms) {
-        rank += 1;
-        // console.log('Совпало количество комнат');
-      }
-      return rank;
-    };
-
     // Обновление и перерисовка карточек с метками на карте
     var updateAnnouncements = function () {
-      //var result = filteredAnnouncements.sort(function (left, right) {
-      //  return getRank(right) - getRank(left);
-      //});
-      var result = '';
+      var result = filteredAnnouncements;
       if (selectedOptions.type !== 'any') {
         result = filteredAnnouncements.filter(function (item) {
           return item.offer.type === selectedOptions.type;
@@ -70,7 +35,7 @@
           if (selectedOptions.price === 'low') {
             return item.offer.price < 10000;
           } else if (selectedOptions.price === 'middle') {
-            return 50000 < item.offer.price > 10000;
+            return item.offer.price > 10000 && item.offer.price < 50000;
           } else if (selectedOptions.price === 'high') {
             return item.offer.price > 50000;
           }
@@ -79,14 +44,26 @@
 
       if (selectedOptions.guests !== 'any') {
         result = result.filter(function (item) {
-          return item.offer.guests === selectedOptions.guests;
+          return item.offer.guests === +selectedOptions.guests;
         });
       }
-      console.log(result);
 
       if (selectedOptions.rooms !== 'any') {
         result = result.filter(function (item) {
-          item.offer.rooms === selectedOptions.rooms;
+          return item.offer.rooms === +selectedOptions.rooms;
+        });
+      }
+
+      if (selectedOptions.features.length > 0) {
+        result = result.filter(function (item) {
+          var res = false;
+          item.offer.features.forEach(function (feature) {
+            if (selectedOptions.features.includes(feature)) {
+              res = true;
+            }
+          });
+
+          return res;
         });
       }
 
@@ -106,6 +83,9 @@
       window.pin.addAnnouncementsLabelInDOM(result);
       window.card.addAnnouncementsTextInDOM(result);
 
+      setTimeout(function () {
+        window.map.searchAndShowElements();
+      }, 1000);
 
       return result;
     };
@@ -128,25 +108,21 @@
     typeSelect.addEventListener('change', function (evt) {
       selectedOptions.type = evt.target.options[evt.target.selectedIndex].value;
       updateAnnouncements();
-      // console.log(selectedOptions);
     });
 
     priceSelect.addEventListener('change', function (evt) {
       selectedOptions.price = evt.target.options[evt.target.selectedIndex].value;
       updateAnnouncements();
-      // console.log(selectedOptions);
     });
 
     roomsSelect.addEventListener('change', function (evt) {
       selectedOptions.rooms = evt.target.options[evt.target.selectedIndex].value;
       updateAnnouncements();
-      // console.log(selectedOptions);
     });
 
     guestsSelect.addEventListener('change', function (evt) {
       selectedOptions.guests = evt.target.options[evt.target.selectedIndex].value;
       updateAnnouncements();
-      // console.log(selectedOptions);
     });
   };
 })();

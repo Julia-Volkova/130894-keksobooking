@@ -57,7 +57,9 @@
     addAnnouncementsTextInDOM: function (announcements) {
       var fragment = document.createDocumentFragment();
       for (var b = 0; b <= 5; b++) {
-        fragment.appendChild(renderAnnouncement(announcements[b]));
+        if (announcements[b]) {
+          fragment.appendChild(renderAnnouncement(announcements[b]));
+        }
       }
 
       window.map.workspace.insertBefore(fragment, document.querySelector('.map__filters-container'));

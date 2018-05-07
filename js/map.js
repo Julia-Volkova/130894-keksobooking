@@ -3,7 +3,7 @@
 (function () {
   window.map = {
     workspace: document.querySelector('.map'),
-    noticeForm: document.querySelector('.notice__form')
+    noticeForm: document.querySelector('.notice__form'),
   };
 
   var mainPin = document.querySelector('.map__pin--main');
@@ -54,15 +54,15 @@
   };
 
   // Просмотр карточки объявления по клику на метку
-  var showCurrentCard = function () {
-    pinsLabelsArray.forEach(function (item, index) {
+  var showCurrentCard = function (pins, cards) {
+    pins.forEach(function (item, index) {
       item.addEventListener('click', function () {
-        pinsCardsArray.forEach(function (elem) {
+        cards.forEach(function (elem) {
           if (!elem.classList.contains('hidden')) {
             elem.classList.add('hidden');
           }
         });
-        pinsCardsArray[index].classList.remove('hidden');
+        cards[index].classList.remove('hidden');
         closeCurrentCard();
       });
     });
@@ -84,12 +84,14 @@
   };
 
   // Поиск элементов после активации карты
-  var searchElements = function () {
+  window.map.searchAndShowElements = function () {
     pinsLabels = window.pin.ListAnnouncementLabel.querySelectorAll('.map__pin:not(.map__pin--main)');
     pinsLabelsArray = Array.from(pinsLabels);
 
     pinsCards = window.map.workspace.querySelectorAll('.map__card');
     pinsCardsArray = Array.from(pinsCards);
+
+    showCurrentCard(pinsLabelsArray, pinsCardsArray);
   };
 
   // Перетаскивания главной метки и выбор карточки по клику
@@ -120,11 +122,9 @@
 
       if (mainPin.offsetTop + LABEL_HEIGHT / 2 < 150) {
         mainPin.style.top = 150 - LABEL_HEIGHT / 2 + 'px';
-      }
-      else if (mainPin.offsetTop + LABEL_HEIGHT / 2 > 500) {
+      } else if (mainPin.offsetTop + LABEL_HEIGHT / 2 > 500) {
         mainPin.style.top = 500 - LABEL_HEIGHT / 2 + 'px';
       }
-
 
       // Ограничение карты по-горизонтали
       mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
@@ -155,8 +155,7 @@
       isRenderAnnouncements = true;
 
       setTimeout(function () {
-        searchElements();
-        showCurrentCard();
+        window.map.searchAndShowElements();
       }, 1000);
     }
   };
@@ -199,4 +198,6 @@
     evt.preventDefault();
     window.backend.save(new FormData(window.map.noticeForm), onLoad, onError);
   });
+
+
 })();

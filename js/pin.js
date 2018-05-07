@@ -17,7 +17,9 @@
     addAnnouncementsLabelInDOM: function (announcements) {
       var fragmentLabel = document.createDocumentFragment();
       for (var i = 0; i <= 5; i++) {
-        fragmentLabel.appendChild(renderAnnouncementLabel(announcements[i]));
+        if (announcements[i]) {
+          fragmentLabel.appendChild(renderAnnouncementLabel(announcements[i]));
+        }
       }
 
       window.pin.ListAnnouncementLabel.appendChild(fragmentLabel);
